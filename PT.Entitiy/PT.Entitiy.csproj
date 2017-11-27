@@ -74,11 +74,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IdentityModel\ApplicationRole.cs" />
+    <Compile Include="IdentityModel\ApplicationUser.cs" />
+    <Compile Include="Model\BaseModel.cs" />
+    <Compile Include="Model\Department.cs" />
+    <Compile Include="Model\LaborLog.cs" />
+    <Compile Include="Model\SalaryLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModel\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
