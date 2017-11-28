@@ -17,6 +17,7 @@ namespace PT.Entitiy.IdentityModel
         public DateTime RegisterDate { get; set; } = DateTime.Now;
         public decimal Salary { get; set; }
         public int? DepartmentId { get; set; }
+        public string ActivationCode { get; set; }
 
         [ForeignKey("DepartmentId")]
         public virtual Department Department { get; set; }

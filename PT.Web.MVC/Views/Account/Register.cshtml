@@ -1,0 +1,49 @@
+﻿@model PT.Entitiy.ViewModel.RegisterViewModel
+
+@{
+    ViewBag.Title = "Register";
+}
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="panel">
+            <div class="text-center text-danger">@Html.ValidationSummary()</div>
+        </div>
+    </div>
+    <div class="col-md-offset-3 col-md-6">
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+        {
+            <div class="form-group">
+                @Html.LabelFor(x => x.Name)
+                @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Ad" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Surname)
+                @Html.TextBoxFor(x => x.Surname, new { @class = "form-control", placeholder = "Soyad" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Username)
+                @Html.TextBoxFor(x => x.Username, new { @class = "form-control", placeholder = "Kullanıcı Adı" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "E-Mail" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Password)
+                @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "E-Şifre", type = "password" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ConfirmPassword)
+                @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control", placeholder = "Şifre Tekrar", type = "password" })
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.ActionLink("Üye iseniz", "Login", "Account", new { @class = "btn btn-info btn-block" })
+                </div>
+                <div class="col-sm-6">
+                    <input type="submit" value="Kayıt Ol" class="btn btn-block btn-success" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
