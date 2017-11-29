@@ -9,7 +9,15 @@ namespace PT.DAL
     {
         public MyContext()
             : base("name=MyCon")
-        { }
+        {
+            
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            this.RequireUniqueEmail = true;
+        }
 
         public virtual DbSet<Department> Departments { get; set; }
         public virtual DbSet<LaborLog> LaborLogs { get; set; }

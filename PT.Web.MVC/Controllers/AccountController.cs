@@ -35,6 +35,12 @@ namespace PT.Web.MVC.Controllers
                 ModelState.AddModelError(string.Empty, "Bu kullanıcı zaten kayıtlı!");
                 return View(model);
             }
+            checkUser = userManager.FindByEmail(model.Email);
+            if (checkUser != null)
+            {
+                ModelState.AddModelError(string.Empty, "Bu eposta adresi kullanılmakta");
+                return View(model);
+            }
             // register işlemi yapılır
             var activationCode = Guid.NewGuid().ToString();
             ApplicationUser user = new ApplicationUser()
