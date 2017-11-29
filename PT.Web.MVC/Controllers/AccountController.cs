@@ -143,5 +143,37 @@ namespace PT.Web.MVC.Controllers
 
             return View();
         }
+
+        public ActionResult RecoverPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RecoverPassword(string email)
+        {
+            var userStore = MembershipTools.NewUserStore();
+            var userManager = new UserManager<ApplicationUser>(userStore);
+            var sonuc = userStore.Context.Set<ApplicationUser>().FirstOrDefault(x => x.Email == email);
+            if (sonuc == null)
+            {
+                ViewBag.sonuc = "E mail adresiniz sisteme kayıtlı değil";
+                return View();
+            }
+            var randomPass = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6);
+            await userStore.SetPasswordHashAsync(sonuc, userManager.PasswordHasher.HashPassword(randomPass));
+            await userStore.UpdateAsync(sonuc);
+            await userStore.Context.SaveChangesAsync();
+
+            await SiteSettings.SendMail(new MailModel()
+            {
+                To = sonuc.Email,
+                Subject = "Şifreniz Değişti",
+                Message = $"Merhaba {sonuc.Name} {sonuc.Surname} <br/>Yeni Şifreniz : <b>{randomPass}</b>"
+            });
+            ViewBag.sonuc = "Email adresinize yeni şifreniz gönderilmiştir";
+            return View();
+        }
     }
 }
