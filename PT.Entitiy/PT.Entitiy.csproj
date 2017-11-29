@@ -81,6 +81,7 @@
     <Compile Include="Model\LaborLog.cs" />
     <Compile Include="Model\SalaryLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MailModel.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
   </ItemGroup>

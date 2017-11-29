@@ -1,0 +1,37 @@
+﻿@model PT.Entitiy.ViewModel.LoginViewModel
+@{
+    ViewBag.Title = "Login";
+}
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="panel">
+            <div class="text-center text-danger">@Html.ValidationSummary()</div>
+        </div>
+    </div>
+    <div class="col-md-offset-3 col-md-6">
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(x => x.UserName)
+                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", placeholder = "Kullanıcı Adı" })
+                @Html.ValidationMessageFor(x => x.UserName)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.Password)
+                @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "E-Şifre", type = "password" })
+                @Html.ValidationMessageFor(x => x.Password)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.RememberMe)
+                @Html.CheckBoxFor(x => x.RememberMe)
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.ActionLink("Üye değilseniz", "Register", "Account", new { @class = "btn btn-info btn-block" })<br />
+                    <input type="submit" value="Giriş Yap" class="btn btn-block btn-success" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

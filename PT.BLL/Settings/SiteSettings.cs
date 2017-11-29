@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PT.BLL.Settings
 {
-    public class SiteSettings
+    public static class SiteSettings
     {
         public static string SiteMail = "platoakademi2017@gmail.com";
         public static string SiteMailPassword = "plt2016plt";
