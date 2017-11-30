@@ -181,20 +181,23 @@ namespace PT.Web.MVC.Controllers
         {
             var userManager = MembershipTools.NewUserManager();
             var user = userManager.FindById(HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId());
-            var model = new ProfileViewModel()
+            var model = new ProfilePasswordViewModel()
             {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                Surname = user.Surname,
-                UserName = user.UserName
+                ProfileModel = new ProfileViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    UserName = user.UserName
+                }
             };
 
             return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Profile(ProfileViewModel model)
+        public async Task<ActionResult> Profile(ProfilePasswordViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -202,12 +205,12 @@ namespace PT.Web.MVC.Controllers
             {
                 var userStore = MembershipTools.NewUserStore();
                 var userManager = new UserManager<ApplicationUser>(userStore);
-                var user = userManager.FindById(model.Id);
-                user.Name = model.Name;
-                user.Surname = model.Surname;
-                if (user.Email != model.Email)
+                var user = userManager.FindById(model.ProfileModel.Id);
+                user.Name = model.ProfileModel.Name;
+                user.Surname = model.ProfileModel.Surname;
+                if (user.Email != model.ProfileModel.Email)
                 {
-                    user.Email = model.Email;
+                    user.Email = model.ProfileModel.Email;
                     if (HttpContext.User.IsInRole("Admin"))
                     {
                         userManager.RemoveFromRole(user.Id, "Admin");
@@ -230,13 +233,16 @@ namespace PT.Web.MVC.Controllers
                 }
                 await userStore.UpdateAsync(user);
                 await userStore.Context.SaveChangesAsync();
-                var model1 = new ProfileViewModel()
+                var model1 = new ProfilePasswordViewModel()
                 {
-                    Id = user.Id,
-                    Email = user.Email,
-                    Name = user.Name,
-                    Surname = user.Surname,
-                    UserName = user.UserName
+                    ProfileModel = new ProfileViewModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        UserName = user.UserName
+                    }
                 };
                 ViewBag.sonuc = "Bilgileriniz güncelleşmiştir";
                 return View(model1);
@@ -250,31 +256,34 @@ namespace PT.Web.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UpdatePassword(ProfileViewModel model)
+        public async Task<ActionResult> UpdatePassword(ProfilePasswordViewModel model)
         {
-            if (!ModelState.IsValid)
-                return View(model);
+            if (model.PasswordModel.NewPassword != model.PasswordModel.NewPasswordConfirm)
+            {
+                ModelState.AddModelError(string.Empty, "Şifreler uyuşmuyor");
+                return View("Profile", model);
+            }
             try
             {
                 var userStore = MembershipTools.NewUserStore();
                 var userManager = new UserManager<ApplicationUser>(userStore);
-                var user = userManager.FindById(model.Id);
-                user = userManager.Find(user.UserName, model.OldPassword);
+                var user = userManager.FindById(model.ProfileModel.Id);
+                user = userManager.Find(user.UserName, model.PasswordModel.OldPassword);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Mevcut şifreniz yanlış girilmiştir");
-                    return View(model);
+                    return View("Profile", model);
                 }
-                await userStore.SetPasswordHashAsync(user, userManager.PasswordHasher.HashPassword(model.NewPassword));
+                await userStore.SetPasswordHashAsync(user, userManager.PasswordHasher.HashPassword(model.PasswordModel.NewPassword));
                 await userStore.UpdateAsync(user);
                 await userStore.Context.SaveChangesAsync();
                 HttpContext.GetOwinContext().Authentication.SignOut();
-                return View();
+                return RedirectToAction("Profile");
             }
             catch (Exception ex)
             {
                 ViewBag.sonuc = "Güncelleşme işleminde bir hata oluştu. " + ex.Message;
-                return View(model);
+                return View("Profile", model);
             }
         }
     }

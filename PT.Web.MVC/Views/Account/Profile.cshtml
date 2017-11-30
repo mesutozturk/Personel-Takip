@@ -1,63 +1,63 @@
 ﻿@using PT.Entitiy.ViewModel
-@model ProfileViewModel
+@model ProfilePasswordViewModel
 @{
-    ViewBag.Title = $"Profil Ekranı  - {Model.UserName}";
+    ViewBag.Title = $"Profil Ekranı  - {Model.ProfileModel.UserName}";
 }
 
-<h2 class="text-primary">@Model.Name @Model.Surname</h2>
+<h2 class="text-primary">@Model.ProfileModel.Name @Model.ProfileModel.Surname</h2>
 @Html.ValidationSummary()
 <h2 class="text-info">@ViewBag.sonuc</h2>
-    <div class="row">
-        <div class="col-md-6">
-            @using (Html.BeginForm("Profile", "Account", FormMethod.Post))
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Profile", "Account", FormMethod.Post))
             {
-                @Html.AntiForgeryToken()
-                <div class="form-group">
-                    @Html.LabelFor(x => x.UserName)
-                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", placeholder = "Kullanıcı Adı", @readonly = true })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Name)
-                    @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Ad" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Surname)
-                    @Html.TextBoxFor(x => x.Surname, new { @class = "form-control", placeholder = "Soyad" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Email)
-                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "E-Mail" })
-                </div>
-                @Html.HiddenFor(x => x.Id)
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(x => x.ProfileModel.UserName)
+                @Html.TextBoxFor(x => x.ProfileModel.UserName, new { @class = "form-control", placeholder = "Kullanıcı Adı", @readonly = true })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ProfileModel.Name)
+                @Html.TextBoxFor(x => x.ProfileModel.Name, new { @class = "form-control", placeholder = "Ad" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ProfileModel.Surname)
+                @Html.TextBoxFor(x => x.ProfileModel.Surname, new { @class = "form-control", placeholder = "Soyad" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.ProfileModel.Email)
+                @Html.TextBoxFor(x => x.ProfileModel.Email, new { @class = "form-control", placeholder = "E-Mail" })
+            </div>
+                @Html.HiddenFor(x => x.ProfileModel.Id)
                 <div class="row">
                     <div class="col-sm-12">
                         <input type="submit" value="Profili Güncelle" class="btn btn-success btn-block" />
                     </div>
                 </div>
-            }
-        </div>
-        <div class="col-md-6">
-            @using (Html.BeginForm("UpdatePassword", "Account", FormMethod.Post))
-            {
-                @Html.AntiForgeryToken()
-                <div class="form-group">
-                    @Html.LabelFor(x => x.OldPassword)
-                    @Html.TextBoxFor(x => x.OldPassword, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.NewPassword)
-                    @Html.TextBoxFor(x => x.NewPassword, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(x => x.NewPasswordConfirm)
-                    @Html.TextBoxFor(x => x.NewPasswordConfirm, new { @class = "form-control" })
-                </div>
-                @Html.HiddenFor(x => x.Id)
-                <div class="row">
-                    <div class="col-sm-12">
-                        <input type="submit" value="Şifre Değiştir" class="btn btn-primary btn-block btn-lg" />
-                    </div>
-                </div>
-            }
-        </div>
+        }
     </div>
+    <div class="col-md-6">
+        @using (Html.BeginForm("UpdatePassword", "Account", FormMethod.Post))
+            {
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                @Html.LabelFor(x => x.PasswordModel.OldPassword)
+                @Html.TextBoxFor(x => x.PasswordModel.OldPassword, new { @class = "form-control", type = "password" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.PasswordModel.NewPassword)
+                @Html.TextBoxFor(x => x.PasswordModel.NewPassword, new { @class = "form-control", type = "password" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(x => x.PasswordModel.NewPasswordConfirm)
+                @Html.TextBoxFor(x => x.PasswordModel.NewPasswordConfirm, new { @class = "form-control", type = "password" })
+            </div>
+            @Html.HiddenFor(x => x.ProfileModel.Id)
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="submit" value="Şifre Değiştir" class="btn btn-primary btn-block btn-lg" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
