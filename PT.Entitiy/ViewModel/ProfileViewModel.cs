@@ -2,8 +2,9 @@
 
 namespace PT.Entitiy.ViewModel
 {
-    public class RegisterViewModel
+    public class ProfileViewModel
     {
+        public string Id { get; set; }
         [Required]
         [Display(Name = "Ad")]
         [StringLength(25)]
@@ -14,19 +15,22 @@ namespace PT.Entitiy.ViewModel
         public string Surname { get; set; }
         [Required]
         [Display(Name = "Kullanıcı Adı")]
-        public string Username { get; set; }
+        public string UserName { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        [Required]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Şifreniz en az 5 karakter olmalıdır!")]
-        [Display(Name = "Şifre")]
+        [Display(Name = "Eski Şifre")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }
-        [Required]
+        public string OldPassword { get; set; }
+        [DataType(DataType.Password)]
+        [Display(Name = "Yeni Şifre")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Şifreniz en az 5 karakter olmalıdır!")]
+        public string NewPassword { get; set; }
         [DataType(DataType.Password)]
         [Display(Name = "Şifre Tekrar")]
-        [Compare("Password", ErrorMessage = "Şifreler uyuşmuyor")]
-        public string ConfirmPassword { get; set; }
+        [Compare("NewPassword", ErrorMessage = "Şifreler uyuşmuyor")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Şifreniz en az 5 karakter olmalıdır!")]
+        public string NewPasswordConfirm { get; set; }
     }
 }
