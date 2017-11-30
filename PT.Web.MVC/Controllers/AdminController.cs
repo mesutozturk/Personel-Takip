@@ -15,6 +15,7 @@ namespace PT.Web.MVC.Controllers
         // GET: Admin
         public ActionResult Index()
         {
+            var roles = MembershipTools.NewRoleManager().Roles.ToList();
             var userManager = MembershipTools.NewUserManager();
             var users = userManager.Users.Select(x => new UsersViewModel
             {
@@ -26,9 +27,8 @@ namespace PT.Web.MVC.Controllers
                 UserId = x.Id,
                 UserName = x.UserName,
                 RoleId = x.Roles.FirstOrDefault().RoleId,
-                RoleName = MembershipTools.NewRoleManager().FindById(x.Roles.FirstOrDefault().RoleId).Name
+                RoleName = roles.FirstOrDefault(y => y.Id == x.Roles.FirstOrDefault().RoleId).Name
             }).ToList();
-            var roles = MembershipTools.NewRoleManager().Roles.ToList();
             List<SelectListItem> rolList = new List<SelectListItem>();
             roles.ForEach(x => new SelectListItem()
             {
