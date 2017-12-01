@@ -15,5 +15,6 @@ namespace PT.Entitiy.ViewModel
         public DateTime RegisterDate { get; set; }
         public int MyProperty { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
+        public string Country { get; set; }
     }
 }
