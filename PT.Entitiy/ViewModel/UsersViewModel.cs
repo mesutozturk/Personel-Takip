@@ -27,5 +27,6 @@ namespace PT.Entitiy.ViewModel
         public int MyProperty { get; set; }
         public int MyProperty { get; set; }
         public int MyProperty { get; set; }
+        public string cakisma { get; set; }
     }
 }
