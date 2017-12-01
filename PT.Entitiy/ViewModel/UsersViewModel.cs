@@ -16,18 +16,9 @@ namespace PT.Entitiy.ViewModel
         public int MyProperty { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public string Country { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
-        public int MyProperty { get; set; }
+        public int MyProperty2 { get; set; }
         public string cakisma { get; set; }
+        public int ordulu { get; set; }
         public string BulentOzen { get; set; }
     }
 }
