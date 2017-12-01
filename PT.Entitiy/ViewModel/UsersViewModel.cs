@@ -18,5 +18,6 @@ namespace PT.Entitiy.ViewModel
         public string Country { get; set; }
         public int MyProperty2 { get; set; }
         public string cakisma { get; set; }
+        public int ordulu { get; set; }
     }
 }
