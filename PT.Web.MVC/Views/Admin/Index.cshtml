@@ -5,3 +5,44 @@
 
 <h2>Toplam Üye Sayısı: @Model.Count</h2>
 
+<div class="row">
+    <div class="col-md-offset-1 col-md-10">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>Kullanıcı Adı</th>
+                    <th>Email</th>
+                    <th>Maaş</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>Rol</th>
+                    <th>Düzen</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int sayac = 0;
+                }
+                @foreach (var item in Model)
+                {
+                    sayac++;
+                    <tr>
+                        <th>@sayac</th>
+                        <td>@item.Name</td>
+                        <td>@item.Surname</td>
+                        <td>@item.UserName</td>
+                        <td>@item.Email</td>
+                        <td>@($"{item.Salary:c2}")</td>
+                        <td>@($"{item.RegisterDate:dd-MMMM-yy HH:mm dddd}")</td>
+                        <td>@item.RoleName</td>
+                        <td>
+                            <a href="@Url.Action("EditUser", "Admin", new {id = item.UserId})" class="btn btn-block btn-warning">Düzenle</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
