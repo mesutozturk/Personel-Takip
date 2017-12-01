@@ -13,5 +13,6 @@ namespace PT.Entitiy.ViewModel
         public string Email { get; set; }
         public decimal Salary { get; set; }
         public DateTime RegisterDate { get; set; }
+        public string CreateNew { get; set; }
     }
 }
