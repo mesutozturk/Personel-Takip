@@ -20,5 +20,6 @@ namespace PT.Entitiy.ViewModel
         public string cakisma { get; set; }
         public int ordulu { get; set; }
         public string BulentOzen { get; set; }
+        public string CreateNew { get; set; }
     }
 }
