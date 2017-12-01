@@ -27,6 +27,9 @@
                     @if (HttpContext.Current.User.Identity.IsAuthenticated)
                     {
                         <li>
+                            <a href="@Url.Action("Profile", "Account")">Profil</a>
+                        </li>
+                        <li>
                             <a href="@Url.Action("Logout", "Account")">Çıkış Yap</a>
                         </li>
                     }

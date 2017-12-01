@@ -181,5 +181,116 @@ namespace PT.Web.MVC.Controllers
             ViewBag.sonuc = "Email adresinize yeni şifreniz gönderilmiştir";
             return View();
         }
+
+        [Authorize]
+        public ActionResult Profile()
+        {
+            var userManager = MembershipTools.NewUserManager();
+            var user = userManager.FindById(HttpContext.GetOwinContext().Authentication.User.Identity.GetUserId());
+            var model = new ProfilePasswordViewModel()
+            {
+                ProfileModel = new ProfileViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    UserName = user.UserName
+                }
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Profile(ProfilePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+            try
+            {
+                var userStore = MembershipTools.NewUserStore();
+                var userManager = new UserManager<ApplicationUser>(userStore);
+                var user = userManager.FindById(model.ProfileModel.Id);
+                user.Name = model.ProfileModel.Name;
+                user.Surname = model.ProfileModel.Surname;
+                if (user.Email != model.ProfileModel.Email)
+                {
+                    user.Email = model.ProfileModel.Email;
+                    if (HttpContext.User.IsInRole("Admin"))
+                    {
+                        userManager.RemoveFromRole(user.Id, "Admin");
+                    }
+                    else if (HttpContext.User.IsInRole("User"))
+                    {
+                        userManager.RemoveFromRole(user.Id, "User");
+                    }
+                    userManager.AddToRole(user.Id, "Passive");
+                    user.ActivationCode = Guid.NewGuid().ToString().Replace("-", "");
+                    string siteUrl = Request.Url.Scheme + Uri.SchemeDelimiter + Request.Url.Host +
+                                    (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
+                    await SiteSettings.SendMail(new MailModel
+                    {
+                        To = user.Email,
+                        Subject = "Personel Yönetimi - Aktivasyon",
+                        Message =
+                                $"Merhaba {user.Name} {user.Surname} <br/>Email adresinizi <b>değiştirdiğiniz</b> için hesabınızı tekrar aktif etmelisiniz. <a href='{siteUrl}/Account/Activation?code={user.ActivationCode}'>Aktivasyon Kodu</a>"
+                    });
+                }
+                await userStore.UpdateAsync(user);
+                await userStore.Context.SaveChangesAsync();
+                var model1 = new ProfilePasswordViewModel()
+                {
+                    ProfileModel = new ProfileViewModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        Name = user.Name,
+                        Surname = user.Surname,
+                        UserName = user.UserName
+                    }
+                };
+                ViewBag.sonuc = "Bilgileriniz güncelleşmiştir";
+                return View(model1);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.sonuc = ex.Message;
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdatePassword(ProfilePasswordViewModel model)
+        {
+            if (model.PasswordModel.NewPassword != model.PasswordModel.NewPasswordConfirm)
+            {
+                ModelState.AddModelError(string.Empty, "Şifreler uyuşmuyor");
+                return View("Profile", model);
+            }
+            try
+            {
+                var userStore = MembershipTools.NewUserStore();
+                var userManager = new UserManager<ApplicationUser>(userStore);
+                var user = userManager.FindById(model.ProfileModel.Id);
+                user = userManager.Find(user.UserName, model.PasswordModel.OldPassword);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Mevcut şifreniz yanlış girilmiştir");
+                    return View("Profile", model);
+                }
+                await userStore.SetPasswordHashAsync(user, userManager.PasswordHasher.HashPassword(model.PasswordModel.NewPassword));
+                await userStore.UpdateAsync(user);
+                await userStore.Context.SaveChangesAsync();
+                HttpContext.GetOwinContext().Authentication.SignOut();
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.sonuc = "Güncelleşme işleminde bir hata oluştu. " + ex.Message;
+                return View("Profile", model);
+            }
+        }
     }
 }
