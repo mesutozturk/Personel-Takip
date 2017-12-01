@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNet.Identity;
-using PT.Entitiy.ViewModel;
-using System;
+using PT.BLL.AccountRepository;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using PT.BLL.AccountRepository;
+using PT.Entitiy.IdentityModel;
+using PT.Entitiy.ViewModel;
 
 namespace PT.Web.MVC.Controllers
 {
@@ -17,7 +17,7 @@ namespace PT.Web.MVC.Controllers
         {
             var roles = MembershipTools.NewRoleManager().Roles.ToList();
             var userManager = MembershipTools.NewUserManager();
-            var users = userManager.Users.ToList().Select(x => new UsersViewModel
+            var users = userManager.Users.ToList().Select(x => new UsersViewModel()
             {
                 Email = x.Email,
                 Name = x.Name,
@@ -39,18 +39,19 @@ namespace PT.Web.MVC.Controllers
 
             var roles = MembershipTools.NewRoleManager().Roles.ToList();
             List<SelectListItem> rolList = new List<SelectListItem>();
-            roles.ForEach(x => new SelectListItem()
+            roles.ForEach(x => rolList.Add(new SelectListItem()
             {
                 Text = x.Name,
                 Value = x.Id
-            });
+            })
+            );
             ViewBag.roles = rolList;
             var userManager = MembershipTools.NewUserManager();
             var user = userManager.FindById(id);
             if (user == null)
                 return RedirectToAction("Index");
 
-            var model = new UsersViewModel()
+            UsersViewModel model = new UsersViewModel
             {
                 UserName = user.UserName,
                 Email = user.Email,
@@ -64,5 +65,40 @@ namespace PT.Web.MVC.Controllers
             };
             return View(model);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditUser(UsersViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var roles = MembershipTools.NewRoleManager().Roles.ToList();
+            var userStore = MembershipTools.NewUserStore();
+            var userManager = new UserManager<ApplicationUser>(userStore);
+
+            var user = userManager.FindById(model.UserId);
+            if (user == null)
+                return View("Index");
+            user.UserName = model.UserName;
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+            user.Salary = model.Salary;
+            user.Email = model.Email;
+
+            if (model.RoleId != user.Roles.ToList().First().RoleId)
+            {
+                var yeniRoladi = roles.First(x => x.Id == model.RoleId).Name;
+                userManager.AddToRole(model.UserId, yeniRoladi);
+                var eskiRoladi = roles.First(x => x.Id == user.Roles.ToList().First().RoleId).Name;
+                userManager.RemoveFromRole(model.UserId, eskiRoladi);
+            }
+
+            await userStore.UpdateAsync(user);
+            await userStore.Context.SaveChangesAsync();
+
+            return RedirectToAction("EditUser", new {id = model.UserId});
+        }
+
     }
 }
